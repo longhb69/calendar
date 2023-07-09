@@ -9,12 +9,12 @@ import android.content.Intent
 import android.app.Activity
 import android.view.View
 
-
-class AddEventActivity : AppCompatActivity() {
-
+class UpdateEventActivity : AppCompatActivity() {
     private lateinit var date: String
     private lateinit var eventEditText: EditText
     private lateinit var saveButton: Button
+    private lateinit var updateButton: Button
+
 
     private var originalEvent: String? = null
 
@@ -25,14 +25,16 @@ class AddEventActivity : AppCompatActivity() {
         date = intent.getStringExtra("date") ?: ""
         originalEvent = intent.getStringExtra("event")
 
+
         eventEditText = findViewById(R.id.editText_event)
         saveButton = findViewById(R.id.button_save_event)
-
+        updateButton = findViewById(R.id.button_update_event)
 
         supportActionBar?.title = date
 
         if (originalEvent != null) {
             eventEditText.setText(originalEvent)
+            updateButton.visibility = View.VISIBLE
         }
 
         saveButton.setOnClickListener {
@@ -40,12 +42,15 @@ class AddEventActivity : AppCompatActivity() {
             if (event.isNotEmpty()) {
                 val returnIntent = Intent()
                 returnIntent.putExtra("date", date)
-                returnIntent.putExtra("event", event)
+                returnIntent.putExtra("newEvent", event)
+                returnIntent.putExtra("oldEvent", originalEvent)
                 setResult(Activity.RESULT_OK, returnIntent)
                 finish()
             } else {
                 Toast.makeText(this, "Please enter an event", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 }
+

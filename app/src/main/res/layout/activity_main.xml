@@ -37,4 +37,12 @@
         android:layout_marginTop="30dp"
         android:text="Add Event" />
 
+    <LinearLayout
+        android:id="@+id/eventContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_add_event"
+        android:orientation="vertical"
+        android:padding="16dp" />
+
 </RelativeLayout>
