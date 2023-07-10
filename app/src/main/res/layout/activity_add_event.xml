@@ -16,6 +16,7 @@
         android:maxLines="1" />
 
     <!-- Save button -->
+
     <Button
         android:id="@+id/button_save_event"
         android:layout_width="wrap_content"
@@ -24,13 +25,6 @@
         android:layout_marginTop="16dp"
         android:text="Save Event" />
 
-    <Button
-        android:id="@+id/button_update_event"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:text="Done"
-        android:visibility="gone" />
+
 
 </LinearLayout>

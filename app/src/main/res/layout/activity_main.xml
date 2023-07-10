@@ -27,6 +27,7 @@
         android:layout_below="@id/idTVDate"
         android:layout_marginTop="30dp" />
 
+
     <!-- Button to add events -->
     <Button
         android:id="@+id/button_add_event"
@@ -34,15 +35,32 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/calendarView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:text="Add Event" />
 
-    <LinearLayout
-        android:id="@+id/eventContainer"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/button_add_event"
-        android:orientation="vertical"
-        android:padding="16dp" />
+        android:layout_above="@+id/bottom_view"
+        android:layout_marginTop="10dp"
+        android:background="@color/a">
+
+        <LinearLayout
+            android:id="@+id/eventContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            />
+    </ScrollView>
+
+    <View
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true" />
+
+
 
 </RelativeLayout>

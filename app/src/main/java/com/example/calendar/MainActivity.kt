@@ -3,6 +3,8 @@ package com.example.calendar
 import com.example.calendar.AddEventActivity
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.graphics.Paint
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -15,7 +17,10 @@ import android.widget.CalendarView
 import android.widget.CalendarView.OnDateChangeListener
 import android.widget.LinearLayout
 import android.util.Log
+import android.util.TypedValue
+import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -90,8 +95,22 @@ class MainActivity : AppCompatActivity() {
         eventContainer.removeAllViews()
 
         events?.forEach { event ->
+            val layout = RelativeLayout(this)
             val textView = TextView(this)
             textView.text = event
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+
+            val isNotDone = isUpdateEnabled(event)
+
+            if (isNotDone) {
+                textView.setTextColor(ContextCompat.getColor(this, R.color.b))
+                textView.setTypeface(null, Typeface.BOLD)
+            } else {
+                textView.setTextColor(ContextCompat.getColor(this, R.color.gray))
+                textView.setTypeface(null, Typeface.BOLD)
+                textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            }
+
             textView.setOnClickListener {
                 val selectedEvent = (it as TextView).text.toString()
                 val intent = Intent(this, UpdateEventActivity::class.java)
@@ -99,30 +118,55 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("event", selectedEvent)
                 startActivityForResult(intent, MODIFY_EVENT_REQUEST_CODE)
             }
-            if (date == getCurrentDate()) {
-                textView.setBackgroundResource(R.drawable.rounded_background_current_day) // Set rounded background for current day
-            }
 
             if (isUpdateEnabled(event)) {
                 val button = Button(this)
-                button.text = "Mark as Done"
+                button.text = "Done"
+                button.setBackgroundColor(ContextCompat.getColor(this, R.color.Jam))
+                button.setTextColor(ContextCompat.getColor(this, R.color.white))
+
+                button.setPadding(
+                    resources.getDimensionPixelSize(R.dimen.button_padding_start), 10, resources.getDimensionPixelSize(R.dimen.button_padding_end), 10
+                )
+
                 button.setOnClickListener {
                     markEventAsDone(date, event)
                 }
 
-                val layout = LinearLayout(this)
-                layout.orientation = LinearLayout.HORIZONTAL
-                layout.addView(textView)
-                layout.addView(button)
+                val textViewParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                )
+                textViewParams.addRule(RelativeLayout.ALIGN_PARENT_START)
+                textViewParams.addRule(RelativeLayout.CENTER_VERTICAL)
 
-                eventContainer.addView(layout)
-            } else {
-                eventContainer.addView(textView)
+                val buttonParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                )
+                buttonParams.addRule(RelativeLayout.ALIGN_PARENT_END)
+                buttonParams.addRule(RelativeLayout.CENTER_VERTICAL)
+                buttonParams.width = resources.getDimensionPixelSize(R.dimen.button_width)
+                buttonParams.height = resources.getDimensionPixelSize(R.dimen.button_height)
+                buttonParams.marginEnd = resources.getDimensionPixelSize(R.dimen.margin_event_button)
+
+                layout.addView(textView, textViewParams)
+                layout.addView(button, buttonParams)
+                layout.setPadding(0, 10, resources.getDimensionPixelSize(R.dimen.button_spacing), 10)
+            }
+            else {
+                val layoutParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
+
+                layout.addView(textView, layoutParams)
             }
 
+            eventContainer.addView(layout)
         }
     }
-
     private fun addEvent(date: String, event: String) {
         val events = eventMap[date]
         if (events != null) {
@@ -141,23 +185,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun markEventAsDone(date: String, event: String) {
-        // Modify the event status or remove it from the eventMap
-        // based on your specific requirements
         val events = eventMap[date]
         events?.let {
-            if (it.contains(event)) {
-                it.remove(event)
-                // Additional logic for marking event as done
+            val index = it.indexOf(event)
+            if (index != -1) {
+                val updatedEvent = "DONE $event"
+                it[index] = updatedEvent
                 Toast.makeText(this, "Event marked as done: $event", Toast.LENGTH_SHORT).show()
                 displayEvents(date)
             }
         }
     }
     private fun isUpdateEnabled(event: String): Boolean {
-        // Customize the condition based on your requirements
-        // Return true if the event can be updated, false otherwise
-        // For example, you can check if the event is not marked as done
-        return !event.startsWith("[DONE]")
+        return !event.contains("DONE")
     }
     companion object {
         private const val ADD_EVENT_REQUEST_CODE = 1

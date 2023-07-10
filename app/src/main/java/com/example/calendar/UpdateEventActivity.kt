@@ -28,13 +28,13 @@ class UpdateEventActivity : AppCompatActivity() {
 
         eventEditText = findViewById(R.id.editText_event)
         saveButton = findViewById(R.id.button_save_event)
-        updateButton = findViewById(R.id.button_update_event)
+
 
         supportActionBar?.title = date
 
         if (originalEvent != null) {
             eventEditText.setText(originalEvent)
-            updateButton.visibility = View.VISIBLE
+
         }
 
         saveButton.setOnClickListener {
